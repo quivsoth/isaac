@@ -29,5 +29,19 @@
   "jest": {
     "preset": "react-native"
   },
-  "private": true
+  "private": true,
+  "name": "isaac",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quivsoth/isaac.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quivsoth/isaac/issues"
+  },
+  "homepage": "https://github.com/quivsoth/isaac#readme",
+  "description": ""
 }
