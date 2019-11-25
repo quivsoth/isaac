@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import RemoteControl from './RemoteControl';
+import Matter from "matter-js";
+import { GameEngine } from "react-native-game-engine";
+
+import Physics from './Physics';
 import Constants from './Constants';
-import { GameEngine } from 'react-native-game-engine';
-import Matter from 'matter-js';
+
+import Walls from './Walls';
+import Box from './Box';
+import Boxthatmoves from './Boxthatmoves';
 
 
 export default class App extends Component {
