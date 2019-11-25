@@ -7,20 +7,58 @@ import Matter from 'matter-js';
 
 
 export default class App extends Component {
-	constructor(props) {
-		super(props);
-		this.gameEngine = null;
-		var Engine = Matter.Engine,
-			World = Matter.World,
-			Bodies = Matter.Bodies
+	constructor(props){
+        super(props);
+        this.state = {
+            running: true
+        };
+        this.gameEngine = null;
+        this.entities = this.setupWorld();
+	}
+
+	setupWorld = () => {
+        let engine = Matter.Engine.create({ enableSleeping: false });
+        let world = engine.world;
+        
+        // Objects
+        let square = Matter.Bodies.rectangle( 150, 220, 100, 100, { isStatic: false });   //square.restitution = 0;
+        let circle = Matter.Bodies.rectangle( 30, 30, 50, 50); //circle.restitution = 0;
+        let floor = Matter.Bodies.rectangle( Constants.MAX_WIDTH / 2, Constants.MAX_HEIGHT - 25, Constants.MAX_WIDTH, 50, { isStatic: true }); 
+        
+        Matter.World.add(world, [floor,circle,square]);
+
+        // Events
+        Matter.Events.on(engine, 'collisionStart', (event) => {
+          console.log("collision detected");
+          var pairs = event.pairs;
+          //console.log(pairs);
+          // this.gameEngine.dispatch({ type: "game-over"});
+        });
+        Matter.Events.on(engine, 'collisionEnd', (event) => {
+            console.log("collision ended");
+            var pairs = event.pairs;
+        });
+
+        return {
+            physics: { engine: engine, world: world },
+            floor: { body: floor, size: [Constants.MAX_WIDTH, 50], color: 'teal', renderer: Walls},
+            square: { body: square, size: [100, 100], color: 'orange', renderer: Box},
+            circle: { body: circle, size: [50, 50], color: 'purple', renderer: Boxthatmoves},            
+        }
 	}
 	render() {
-		return (
-			<View>
-				<Text>Why helsslo</Text>
-			</View>
-		);
-	}
+        return (
+            <View style={styles.container}>
+                <GameEngine
+                    ref={(ref) => { this.gameEngine = ref; }}
+                    style={styles.gameContainer}
+                    systems={[Physics]}
+                    entities={this.entities}>
+                    <StatusBar hidden={true} />
+                </GameEngine>
+            </View>
+        );
+    }
 }
 // export default class App extends Component {
 // 	constructor(props) {
@@ -62,4 +100,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center'
 	},
+	gameContainer: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
 });
