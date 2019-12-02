@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { array, object, string } from 'prop-types';
 
-export default class Walls extends Component {
+export default class Wall extends Component {
   render() {
     const width = this.props.size[0];
     const height = this.props.size[1];
@@ -23,7 +23,7 @@ export default class Walls extends Component {
   }
 }
 
-Walls.propTypes = {
+Wall.propTypes = {
     size: array,
     body: object, 
     color: string

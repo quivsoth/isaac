@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
+
 import RemoteControl from './RemoteControl';
 import Matter from "matter-js";
 import { GameEngine } from "react-native-game-engine";
@@ -7,9 +8,9 @@ import { GameEngine } from "react-native-game-engine";
 import Physics from './Physics';
 import Constants from './Constants';
 
-import Walls from './Walls';
+import Wall from './Wall';
 import Box from './Box';
-import Boxthatmoves from './Boxthatmoves';
+import Hero from './Hero';
 
 
 export default class App extends Component {
@@ -27,17 +28,23 @@ export default class App extends Component {
         let world = engine.world;
         
         // Objects
-        let square = Matter.Bodies.rectangle( 150, 220, 100, 100, { isStatic: false });   //square.restitution = 0;
-        let circle = Matter.Bodies.rectangle( 30, 30, 50, 50); //circle.restitution = 0;
-        let floor = Matter.Bodies.rectangle( Constants.MAX_WIDTH / 2, Constants.MAX_HEIGHT - 25, Constants.MAX_WIDTH, 50, { isStatic: true }); 
+        let square = Matter.Bodies.rectangle( Constants.MAX_WIDTH / 2, 140, 100, 100, { isStatic: false });   //square.restitution = 0;        
+        let hero = Matter.Bodies.rectangle( 200, 265, 50, 50,{ isStatic: false }); 
+        //hero.restitution = 0;
+        let bottomWall = Matter.Bodies.rectangle( Constants.MAX_WIDTH / 2, Constants.MAX_HEIGHT - 25, Constants.MAX_WIDTH, 50, { isStatic: true });
+        let topWall = Matter.Bodies.rectangle( Constants.MAX_WIDTH / 2, 25, Constants.MAX_WIDTH, 50, { isStatic: true });
+        let rightWall = Matter.Bodies.rectangle( Constants.MAX_WIDTH - 15, 425, Constants.MAX_WIDTH, Constants.MAX_HEIGHT, { isStatic: true });
+        let leftWall = Matter.Bodies.rectangle( 15, 425, Constants.MAX_WIDTH, Constants.MAX_HEIGHT, { isStatic: true });
+        // console.log('Constants.MAX_WIDTH  :', Constants.MAX_WIDTH );
+        // console.log('Constants.MAX_HEIGHT :', Constants.MAX_HEIGHT);
         
-        Matter.World.add(world, [floor,circle,square]);
+        Matter.World.add(world,[square,hero,leftWall,rightWall,bottomWall,topWall]);
 
         // Events
         Matter.Events.on(engine, 'collisionStart', (event) => {
           console.log("collision detected");
-          var pairs = event.pairs;
-          //console.log(pairs);
+        //   var pairs = event.pairs;
+        //   console.log(pairs);
           // this.gameEngine.dispatch({ type: "game-over"});
         });
         Matter.Events.on(engine, 'collisionEnd', (event) => {
@@ -47,9 +54,12 @@ export default class App extends Component {
 
         return {
             physics: { engine: engine, world: world },
-            floor: { body: floor, size: [Constants.MAX_WIDTH, 50], color: 'teal', renderer: Walls},
-            square: { body: square, size: [100, 100], color: 'orange', renderer: Box},
-            circle: { body: circle, size: [50, 50], color: 'purple', renderer: Boxthatmoves},            
+            square: { body: square, size: [100, 100], color: 'yellow', renderer: Box}, 
+            hero: { body: hero, size: [50, 50], color: 'black', renderer: Hero},
+            rightWall: { body: rightWall, size: [30, 840], color: 'teal', renderer: Wall},
+            leftWall: { body: leftWall, size: [30, 840], color: 'teal', renderer: Wall},
+            bottomWall: { body: bottomWall, size: [Constants.MAX_WIDTH, 50], color: 'teal', renderer: Wall},
+            topWall: { body: topWall, size: [Constants.MAX_WIDTH, 50], color: 'teal', renderer: Wall},
         }
 	}
 	render() {
@@ -104,7 +114,9 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'column',
-		justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'brown',
+        
 	},
 	gameContainer: {
         position: 'absolute',
